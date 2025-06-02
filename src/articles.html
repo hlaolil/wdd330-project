@@ -1,0 +1,100 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TheologyHub - Journal Articles</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header id="dynamic-header"></header>
+  <main class="container">
+    <section class="search-section">
+      <form id="search-form" class="search-form">
+        <label for="search-input" class="sr-only">Search journal articles</label>
+        <input
+          id="search-input"
+          type="text"
+          placeholder="Enter keywords for articles"
+          class="search-input"
+          aria-label="Search journal articles"
+        >
+        <select id="sort-select" class="sort-select">
+          <option value="relevance">Sort by Relevance</option>
+          <option value="year-desc">Sort by Year (Newest First)</option>
+          <option value="year-asc">Sort by Year (Oldest First)</option>
+          <option value="title">Sort by Title</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+    </section>
+    <section id="error" class="error hidden"></section>
+    <section id="loading" class="loading hidden">
+      <div class="spinner"></div>
+    </section>
+    <section id="resourceList" class="resource-grid"></section>
+  </main>
+  <footer id="dynamic-footer"></footer>
+
+  <!-- Template for resource cards -->
+  <template id="resource-card-template">
+    <div class="card-resource" role="article">
+      <div class="card-header">
+        <img class="resource-img" alt="">
+        <span class="read-indicator"></span>
+      </div>
+      <h3 class="resource-title"></h3>
+      <p class="resource-type"></p>
+      <p class="resource-authors"></p>
+      <p class="resource-year"></p>
+      <p class="resource-id">
+        <span class="id-label"></span>
+        <a class="resource-link" href="#" target="_blank" rel="noopener noreferrer"></a>
+      </p>
+      <p class="resource-abstract"></p>
+      <div class="button-container"></div>
+    </div>
+  </template>
+
+  <script type="module" src="src/js/main.mjs"></script>
+</body>
+</html>
