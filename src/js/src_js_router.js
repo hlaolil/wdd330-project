@@ -1,11 +1,20 @@
-import { fetchResources, fetchWithRetry, normalizeResource } from './api.js';
-import { renderHeader, displayResources, displayFavourites, displayCollection } from './render.js';
+import {
+  fetchResources,
+  fetchWithRetry,
+  normalizeResource,
+} from "./src_js_api.js";
+import {
+  renderHeader,
+  displayResources,
+  displayFavourites,
+  displayCollection,
+} from "./src_js_render.js";
 
 export function initRouter() {
-  const mainContent = document.getElementById('main-content');
+  const mainContent = document.getElementById("main-content");
 
   const routes = {
-    'home': () => {
+    home: () => {
       mainContent.innerHTML = `
         <section class="mb-8">
           <form id="search-form" class="flex flex-col md:flex-row gap-4 items-center">
@@ -49,7 +58,7 @@ export function initRouter() {
       displayFavourites();
       displayCollection();
     },
-    'book': () => {
+    book: () => {
       mainContent.innerHTML = `
         <section class="mb-8">
           <form id="search-form" class="flex flex-col md:flex-row gap-4 items-center">
@@ -81,9 +90,9 @@ export function initRouter() {
         </section>
         <section id="resourceList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></section>
       `;
-      fetchResources('theology', 'book');
+      fetchResources("theology", "book");
     },
-    'article': () => {
+    article: () => {
       mainContent.innerHTML = `
         <section class="mb-8">
           <form id="search-form" class="flex flex-col md:flex-row gap-4 items-center">
@@ -115,9 +124,9 @@ export function initRouter() {
         </section>
         <section id="resourceList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></section>
       `;
-      fetchResources('theology', 'article');
+      fetchResources("theology", "article");
     },
-    'dissertation': () => {
+    dissertation: () => {
       mainContent.innerHTML = `
         <section class="mb-8">
           <form id="search-form" class="flex flex-col md:flex-row gap-4 items-center">
@@ -149,23 +158,25 @@ export function initRouter() {
         </section>
         <section id="resourceList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></section>
       `;
-      fetchResources('theology', 'dissertation');
-    }
+      fetchResources("theology", "dissertation");
+    },
   };
 
   function handleRoute() {
-    const path = window.location.hash.slice(1) || 'home';
-    const route = routes[path] || routes['home'];
+    const path = window.location.hash.slice(1) || "home";
+    const route = routes[path] || routes["home"];
     route();
   }
 
-  window.addEventListener('hashchange', handleRoute);
+  window.addEventListener("hashchange", handleRoute);
   handleRoute();
 }
 
 export function navigate(type) {
   window.location.hash = type;
-  document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+  document
+    .querySelectorAll(".nav-link")
+    .forEach((link) => link.classList.remove("active"));
   const activeLink = document.querySelector(`.nav-link[data-type="${type}"]`);
-  if (activeLink) activeLink.classList.add('active');
+  if (activeLink) activeLink.classList.add("active");
 }

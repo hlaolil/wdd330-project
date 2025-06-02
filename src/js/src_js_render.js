@@ -3,29 +3,28 @@ const appConfig = {
     title: 'TheologyHub',
     tagline: 'Search and manage theology books, journals, and dissertations',
     navLinks: [
-      { type: 'home', label: 'Home' },
-      { type: 'book', label: 'Books' },
-      { type: 'article', label: 'Journal Articles' },
-      { type: 'dissertation', label: 'Dissertations' }
+      { type: 'home', label: 'Home', href: 'index.html' },
+      { type: 'book', label: 'Books', href: 'books.html' },
+      { type: 'article', label: 'Journal Articles', href: 'articles.html' },
+      { type: 'dissertation', label: 'Dissertations', href: 'dissertations.html' }
     ]
   },
   footer: {
     message: `© ${new Date().getFullYear()} TheologyHub. Not a real business.`,
-  }
+  },
 };
 
 export function renderHeader() {
   const header = document.getElementById('dynamic-header');
-  header.className = 'bg-blue-600 text-white p-4';
   header.innerHTML = `
-    <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
-      <div class="text-center md:text-left mb-4 md:mb-0">
-        <h1 class="text-3xl font-bold">${appConfig.header.title}</h1>
-        <p class="mt-2">${appConfig.header.tagline}</p>
+    <div class="header-container">
+      <div>
+        <h1 class="header-title">${appConfig.header.title}</h1>
+        <p class="header-tagline">${appConfig.header.tagline}</p>
       </div>
-      <nav class="flex gap-4">
+      <nav class="nav">
         ${appConfig.header.navLinks.map(link => `
-          <a href="#${link.type}" class="nav-link text-white hover:text-blue-200" data-type="${link.type}">${link.label}</a>
+          <a href="${link.href}" class="nav-link" data-type="${link.type}">${link.label}</a>
         `).join('')}
       </nav>
     </div>
@@ -34,7 +33,6 @@ export function renderHeader() {
 
 export function renderFooter() {
   const footer = document.getElementById('dynamic-footer');
-  footer.className = 'bg-gray-800 text-white text-center p-4 mt-8';
   footer.innerHTML = `<p>${appConfig.footer.message}</p>`;
 }
 
@@ -69,36 +67,36 @@ export function renderResourceCard(resource, options = {}) {
   link.href = resource.link;
   link.textContent = resource.id;
   clone.querySelector('.resource-abstract').textContent = resource.abstract;
-  clone.querySelector('.card').setAttribute('aria-label', `${resource.type}: ${resource.title}`);
+  clone.querySelector('.card-resource').setAttribute('aria-label', `${resource.type}: ${resource.title}`);
 
   const buttonContainer = clone.querySelector('.button-container');
   if (!isFavouritesList && !isCollection) {
     buttonContainer.innerHTML = `
-      <button class="add-to-collection bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700" data-resource='${JSON.stringify(resource)}'>
+      <button class="btn btn-collection" data-resource='${JSON.stringify(resource)}'>
         Add to Collection
       </button>
-      <button class="${isFavourite ? 'remove-from-favourites bg-yellow-600' : 'add-to-favourites bg-yellow-500'} text-white px-4 py-2 rounded-lg hover:bg-yellow-700" data-resource='${JSON.stringify(resource)}'>
+      <button class="btn ${isFavourite ? 'btn-favourite-remove' : 'btn-favourite'}" data-resource='${JSON.stringify(resource)}'>
         ${isFavourite ? 'Remove from Favourites' : 'Add to Favourites'}
       </button>
-      <button class="${isRead ? 'mark-as-unread bg-gray-600' : 'mark-as-read bg-green-600'} text-white px-4 py-2 rounded-lg hover:bg-${isRead ? 'gray-700' : 'green-700'}" data-id="${resource.id}">
+      <button class="btn ${isRead ? 'btn-unread' : 'btn-read'}" data-id="${resource.id}">
         ${isRead ? 'Mark as Unread' : 'Mark as Read'}
       </button>
     `;
   } else if (isFavouritesList) {
     buttonContainer.innerHTML = `
-      <button class="remove-from-favourites bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700" data-id="${resource.id}">
+      <button class="btn btn-favourite-remove" data-id="${resource.id}">
         Remove from Favourites
       </button>
-      <button class="${isRead ? 'mark-as-unread bg-gray-600' : 'mark-as-read bg-green-600'} text-white px-4 py-2 rounded-lg hover:bg-${isRead ? 'gray-700' : 'green-700'}" data-id="${resource.id}">
+      <button class="btn ${isRead ? 'btn-unread' : 'btn-read'}" data-id="${resource.id}">
         ${isRead ? 'Mark as Unread' : 'Mark as Read'}
       </button>
     `;
   } else if (isCollection) {
     buttonContainer.innerHTML = `
-      <button class="remove-from-collection bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700" data-id="${resource.id}">
+      <button class="btn btn-collection-remove" data-id="${resource.id}">
         Remove
       </button>
-      <button class="${isRead ? 'mark-as-unread bg-gray-600' : 'mark-as-read bg-green-600'} text-white px-4 py-2 rounded-lg hover:bg-${isRead ? 'gray-700' : 'green-700'}" data-id="${resource.id}">
+      <button class="btn ${isRead ? 'btn-unread' : 'btn-read'}" data-id="${resource.id}">
         ${isRead ? 'Mark as Unread' : 'Mark as Read'}
       </button>
     `;
@@ -107,34 +105,34 @@ export function renderResourceCard(resource, options = {}) {
   return clone;
 }
 
-export function displayResources(resources, filterType = null) {
+export function displayResources(resources, filterType = '') {
   const resourceList = document.getElementById('resourceList');
   resourceList.innerHTML = '';
   const sortBy = document.getElementById('sort-select')?.value || 'relevance';
   const filteredResources = filterType ? resources.filter(r => r.type === filterType) : resources;
   const sortedResources = sortResources([...filteredResources], sortBy);
-  const readStatus = JSON.parse(localStorage.getItem('theologyReadStatus') || '{}');
-  const favourites = JSON.parse(localStorage.getItem('theologyFavourites') || '[]');
+  const readStatus = JSON.parse(localStorage.getItem('theologyResources') || '{}');
+  const favourites = JSON.parse(localStorage.getItem('favorites') || '[]');
 
   if (sortedResources.length === 0) {
-    resourceList.innerHTML = '<div class="text-center text-gray-600 col-span-full">No resources found. Try a different search term or category.</div>';
+    resourceList.innerHTML = '<div class="no-resources-text">No resources found. Try a different search term or category.</div>';
     return;
   }
 
-  sortedResources.forEach(resource => {
+sortedResources.forEach(resource => {
     const card = renderResourceCard(resource, { readStatus, favourites });
     resourceList.appendChild(card);
-  });
+ });
 }
 
 export function displayFavourites() {
   const favouritesList = document.getElementById('favouritesList');
-  const favourites = JSON.parse(localStorage.getItem('theologyFavourites') || '[]');
-  const readStatus = JSON.parse(localStorage.getItem('theologyReadStatus') || '{}');
+  const favourites = JSON.parse(localStorage.getItem('favorites') || '[]');
+  const readStatus = JSON.parse(localStorage.getItem('Favorites') || '{}');
   favouritesList.innerHTML = '';
 
   if (favourites.length === 0) {
-    favouritesList.innerHTML = '<div class="text-center text-gray-600 col-span-full">Your favourites list is empty.</div>';
+    favouritesList.innerHTML = '<div class="no-resources-text">Your favourites list is empty.</div>';
     return;
   }
 
@@ -146,13 +144,13 @@ export function displayFavourites() {
 
 export function displayCollection() {
   const collectionList = document.getElementById('collectionList');
-  const resources = JSON.parse(localStorage.getItem('theologyCollection') || '[]');
-  const readStatus = JSON.parse(localStorage.getItem('theologyReadStatus') || '{}');
-  const favourites = JSON.parse(localStorage.getItem('theologyFavourites') || '[]');
+  const resources = JSON.parse(localStorage.getItem('theologyResources') || '[]');
+  const readStatus = JSON.parse(localStorage.getItem('favorites') || '{}');
+  const favourites = JSON.parse(localStorage.getItem('favorites') || '[]');
   collectionList.innerHTML = '';
 
   if (resources.length === 0) {
-    collectionList.innerHTML = '<div class="text-center text-gray-600 col-span-full">Your collection is empty.</div>';
+    collectionList.innerHTML = '<div class="no-resources-text">Your collection is empty.</div>';
     return;
   }
 

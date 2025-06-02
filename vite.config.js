@@ -1,36 +1,17 @@
-import { defineConfig } from 'vite';
+import { resolve } from "path";
+import { defineConfig } from "vite";
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  root: '.', // Project root
-  base: '/', // Base path for deployment (adjust if hosting in a subdirectory)
+  root: "src/",
+  publicDir: "./public",
   build: {
-    outDir: 'dist', // Output directory for production build
-    target: 'esnext', // Target modern browsers supporting ES modules
-    minify: 'esbuild', // Minify using esbuild for faster builds
-    sourcemap: true, // Generate sourcemaps for debugging
-  },
-  server: {
-    open: true, // Open browser on dev server start
-    port: 3000, // Dev server port
-    proxy: {
-      // Proxy API requests to avoid CORS issues during development
-      '/api/openlibrary': {
-        target: 'https://openlibrary.org',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/openlibrary/, ''),
-        secure: false,
+    outDir: "../dist",    rollupOptions: {
+      input: {
+        main: resolve(__dirname, "src/index.html"),
+        
       },
-      '/api/doaj': {
-        target: 'https://doaj.org',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/doaj/, ''),
-        secure: false,
-      },
-    },
-  },
-  esbuild: {
-    // Ensure .mjs files are treated as JavaScript
-    loader: { '.mjs': 'js' },
+    },// Ensure static assets are copied to dist
+    assetsInclude: ["**/*.json", "**/*.svg"],
+    copyPublicDir: true,
   },
 });

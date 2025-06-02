@@ -1,39 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TheologyHub</title>
-  <script type="module" src="src/js/main.js"></script>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body class="bg-gray-100 font-sans">
-  <header id="dynamic-header"></header>
-  <main class="container mx-auto p-4" id="main-content">
-    <!-- Content rendered dynamically by router -->
-  </main>
-  <footer id="dynamic-footer"></footer>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TheologyHub</title>
+    <script type="module" src="js/src_js_main.mjs"></script>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header id="dynamic-header"></header>
+    <main class="container" id="main-content">
+      <!-- Content rendered dynamically by router -->
+    </main>
+    <footer id="dynamic-footer"></footer>
 
-  <!-- Template for resource cards -->
-  <template id="resource-card-template">
-    <div class="card bg-white rounded-lg shadow-md p-4 flex flex-col" role="article">
-      <div class="flex justify-between items-center">
-        <img class="resource-img w-24 h-36 mb-4" alt="">
-        <span class="read-indicator text-green-500 font-semibold"></span>
+    <!-- Template for resource cards -->
+    <template id="resource-card-template">
+      <div class="card" role="article">
+        <div class="flex-container">
+          <img class="resource-img" alt="" />
+          <span class="read-indicator"></span>
+        </div>
+        <h3 class="resource-title"></h3>
+        <p class="resource-type"></p>
+        <p class="resource-authors"></p>
+        <p class="resource-year"></p>
+        <p class="resource-id">
+          <span class="id-label"></span>
+          <a class="resource-link" href="#" target="_blank" rel="noopener noreferrer"></a>
+        </p>
+        <p class="resource-abstract"></p>
+        <div class="button-container"></div>
       </div>
-      <h3 class="resource-title text-lg font-semibold text-gray-800"></h3>
-      <p class="resource-type text-sm text-gray-600"></p>
-      <p class="resource-authors text-sm text-gray-600"></p>
-      <p class="resource-year text-sm text-gray-600"></p>
-      <p class="resource-id text-sm text-gray-600">
-        <span class="id-label"></span>
-        <a class="resource-link text-blue-600" href="#" target="_blank" rel="noopener noreferrer"></a>
-      </p>
-      <p class="resource-abstract text-sm text-gray-600 mt-2"></p>
-      <div class="flex flex-wrap gap-2 mt-4 button-container"></div>
-    </div>
-  </template>
-
-  
-</body>
+    </template>
+  </body>
 </html>
