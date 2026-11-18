@@ -1,17 +1,14 @@
-import { resolve } from "path";
-import { defineConfig } from "vite";
+import { resolve } from 'path';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
-  root: "src/",
-  publicDir: "./public",
+  root: 'src/',
+  base: './', // relative paths so the build works on Netlify or in a sub-folder
   build: {
-    outDir: "../dist",    rollupOptions: {
-      input: {
-        main: resolve(__dirname, "src/index.html"),
-        
-      },
-    },// Ensure static assets are copied to dist
-    assetsInclude: ["**/*.json", "**/*.svg"],
-    copyPublicDir: true,
+    outDir: '../dist',
+    emptyOutDir: true,
+    rollupOptions: {
+      input: { main: resolve(__dirname, 'src/index.html') },
+    },
   },
 });

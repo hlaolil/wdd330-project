@@ -3,35 +3,116 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TheologicalResearchShelve</title>
-    <script type="module" src="js/src_js_main.mjs"></script>
-    <link rel="stylesheet" href="css/styles.css" />
+    <title>TheologyHub — find and keep theology research</title>
+    <meta name="description" content="Search theology books, journal articles and dissertations, save them to your reading list and export them to Zotero." />
+    <meta name="theme-color" content="#0f2a44" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230f2a44'/><text x='50%25' y='58%25' text-anchor='middle' dominant-baseline='middle' font-family='Georgia,serif' font-size='34' fill='%23f4efe6'>T</text></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <script type="module" src="./js/main.js"></script>
   </head>
   <body>
-    <header id="dynamic-header"></header>
-    <main class="container" id="main-content">
-      <!-- Content rendered dynamically by router -->
-    </main>
-    <footer id="dynamic-footer"></footer>
+    <header class="topbar">
+      <a class="brand" href="#search">Theology<span>Hub</span></a>
+      <nav class="tabs" aria-label="Sections">
+        <a href="#search" data-view="search">Search</a>
+        <a href="#library" data-view="library">My Library <span id="lib-count" class="pill">0</span></a>
+      </nav>
+    </header>
 
-    <!-- Template for resource cards -->
-    <template id="resource-card-template">
-      <div class="card" role="article">
-        <div class="flex-container">
-          <img class="resource-img" alt="" />
-          <span class="read-indicator"></span>
+    <main>
+      <!-- SEARCH -->
+      <section id="view-search" class="view">
+        <div class="hero">
+          <h1>Find theology research</h1>
+          <p>Books from Open Library, journal articles and dissertations from OpenAlex — save what you need and send it to Zotero.</p>
+          <form id="search-form" class="search" role="search">
+            <label class="sr-only" for="q">Search</label>
+            <input id="q" name="q" type="search" placeholder="e.g. church planting in Africa" autocomplete="off" />
+            <button type="submit">Search</button>
+          </form>
+          <div class="controls">
+            <div class="chips" id="type-chips" role="radiogroup" aria-label="Type">
+              <button type="button" data-type="all" aria-pressed="true">All</button>
+              <button type="button" data-type="book" aria-pressed="false">Books</button>
+              <button type="button" data-type="article" aria-pressed="false">Articles</button>
+              <button type="button" data-type="dissertation" aria-pressed="false">Dissertations</button>
+            </div>
+            <div class="selects">
+              <label>Sort
+                <select id="sort">
+                  <option value="relevance">Best match</option>
+                  <option value="newest">Newest first</option>
+                  <option value="oldest">Oldest first</option>
+                  <option value="title">Title A–Z</option>
+                </select>
+              </label>
+              <label class="check"><input id="theo-only" type="checkbox" checked /> Theology only</label>
+            </div>
+          </div>
         </div>
-        <h3 class="resource-title"></h3>
-        <p class="resource-type"></p>
-        <p class="resource-authors"></p>
-        <p class="resource-year"></p>
-        <p class="resource-id">
-          <span class="id-label"></span>
-          <a class="resource-link" href="#" target="_blank" rel="noopener noreferrer"></a>
-        </p>
-        <p class="resource-abstract"></p>
-        <div class="button-container"></div>
-      </div>
-    </template>
+
+        <div class="wrap">
+          <div id="suggestions" class="suggestions">
+            <p>Try a topic:</p>
+            <div class="chips">
+              <button type="button" class="topic">Pentecostalism</button>
+              <button type="button" class="topic">Church planting</button>
+              <button type="button" class="topic">African Christianity</button>
+              <button type="button" class="topic">Missiology</button>
+              <button type="button" class="topic">Book of Acts</button>
+              <button type="button" class="topic">Bivocational ministry</button>
+              <button type="button" class="topic">Theological education</button>
+            </div>
+          </div>
+          <p id="status" class="status" role="status"></p>
+          <div id="results" class="grid"></div>
+          <div class="more"><button id="load-more" type="button" hidden>Load more</button></div>
+        </div>
+      </section>
+
+      <!-- LIBRARY -->
+      <section id="view-library" class="view" hidden>
+        <div class="wrap">
+          <div class="lib-head">
+            <div>
+              <h1>My Library</h1>
+              <p class="muted">Saved in this browser. Export to RIS to import into Zotero.</p>
+            </div>
+            <button id="export" type="button" class="secondary">Export to Zotero (.ris)</button>
+          </div>
+          <div class="controls">
+            <div class="chips" id="status-chips" role="radiogroup" aria-label="Reading status">
+              <button type="button" data-status="all" aria-pressed="true">All</button>
+              <button type="button" data-status="to-read" aria-pressed="false">To read</button>
+              <button type="button" data-status="reading" aria-pressed="false">Reading</button>
+              <button type="button" data-status="read" aria-pressed="false">Read</button>
+            </div>
+            <label class="filter">
+              <span class="sr-only">Filter library</span>
+              <input id="lib-filter" type="search" placeholder="Filter by title or author" />
+            </label>
+          </div>
+          <div id="library" class="grid"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>TheologyHub by <a href="https://hlaolil.github.io/wdd130/">Letlotlo Hlaoli</a> · Data from <a href="https://openlibrary.org">Open Library</a> and <a href="https://openalex.org">OpenAlex</a></p>
+    </footer>
+
+    <dialog id="cite-dialog">
+      <form method="dialog">
+        <h2>Turabian bibliography entry</h2>
+        <p id="cite-text" class="cite"></p>
+        <div class="dialog-actions">
+          <button type="button" id="copy-cite">Copy</button>
+          <button value="close" class="secondary">Close</button>
+        </div>
+      </form>
+    </dialog>
   </body>
 </html>

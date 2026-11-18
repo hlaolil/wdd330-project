@@ -1,16 +1,15 @@
 {
-  "name": "outside",
-  "version": "2.0.0",
-  "description": "Boilerplate for WDD 330 SleepOutside project",
+  "name": "theologyhub",
+  "version": "3.0.0",
+  "description": "TheologyHub: search theology books, articles and dissertations and keep a reading list",
   "main": "main.js",
   "scripts": {
     "start": "vite",
     "build": "vite build --emptyOutDir",
-    "lint": "eslint *.js src/**/*.js",
-    "format": "prettier --ignore-path ./.gitignore --write \"./**/*.{html,json,js,ts,css}\"",
-    "test": "jest"
+    "lint": "eslint src/js",
+    "format": "prettier --ignore-path ./.gitignore --write \"./**/*.{html,json,js,ts,css}\""
   },
-  "author": "Shane Thompson",
+  "author": "Letlotlo Hlaoli",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^8.56.0",
