@@ -144,3 +144,27 @@ footer { text-align: center; color: var(--muted); font-size: .85rem; padding: 2r
   .filter { width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) { .card.skeleton { animation: none; } }
+
+/* reading list */
+.reading-hero .eyebrow { text-transform: uppercase; letter-spacing: .12em; font-size: .78rem; color: #a9d5c0; margin: 0 auto .6rem; }
+.reading-hero h1 { font-size: clamp(1.4rem, 3.6vw, 2.1rem); }
+.rl-actions { display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; margin-top: 1rem; }
+.rl-filter { flex: 1 1 260px; }
+.rl-filter input { width: 100%; padding: .7rem 1rem; border: 0; border-radius: 999px; }
+.rl-toc { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: 1.5rem; }
+.rl-toc a { text-decoration: none; font-size: .85rem; font-weight: 500; color: var(--navy); background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: .35rem .8rem; }
+.rl-toc a span { color: var(--muted); margin-left: .2rem; }
+.rl-section { margin-bottom: 2rem; scroll-margin-top: 5rem; }
+.rl-section h2 { font-size: 1.3rem; border-bottom: 2px solid var(--line); padding-bottom: .4rem; }
+.rl-items { list-style: none; padding: 0; margin: 0; display: grid; gap: .6rem; }
+.rl-item { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: .8rem 1rem; display: grid; grid-template-columns: auto 1fr; gap: .2rem .8rem; align-items: start; }
+.rl-item .badge { margin-top: .2rem; }
+.rl-cite { margin: 0; padding-left: 1.2rem; text-indent: -1.2rem; }
+.rl-buttons { grid-column: 2; display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; font-size: .88rem; font-weight: 500; }
+.rl-buttons a { text-decoration: none; margin-right: .3rem; }
+.rl-buttons button { padding: .3rem .85rem !important; font-size: .85rem; }
+.rl-status { color: var(--green-d); font-weight: 600; }
+.rl-status::before { content: '✓ '; }
+.rl-item.is-read { border-left: 4px solid var(--green); }
+.rl-item.is-reading { border-left: 4px solid #d9a03f; }
+@media (max-width: 600px) { .rl-item { grid-template-columns: 1fr; } .rl-buttons { grid-column: 1; } }

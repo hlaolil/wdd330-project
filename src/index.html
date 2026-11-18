@@ -15,8 +15,9 @@
   </head>
   <body>
     <header class="topbar">
-      <a class="brand" href="#search">Theology<span>Hub</span></a>
+      <a class="brand" href="#reading">Theology<span>Hub</span></a>
       <nav class="tabs" aria-label="Sections">
+        <a href="#reading" data-view="reading">Reading List</a>
         <a href="#search" data-view="search">Search</a>
         <a href="#library" data-view="library">My Library <span id="lib-count" class="pill">0</span></a>
       </nav>
@@ -70,6 +71,23 @@
           <p id="status" class="status" role="status"></p>
           <div id="results" class="grid"></div>
           <div class="more"><button id="load-more" type="button" hidden>Load more</button></div>
+        </div>
+      </section>
+
+      <!-- READING LIST -->
+      <section id="view-reading" class="view" hidden>
+        <div class="hero reading-hero">
+          <p class="eyebrow">My PhD research reading list</p>
+          <h1 id="rl-title"></h1>
+          <p id="rl-intro"></p>
+          <div class="rl-actions">
+            <button type="button" id="rl-save-all">Add all to My Library</button>
+            <label class="rl-filter"><span class="sr-only">Filter reading list</span><input id="rl-filter" type="search" placeholder="Filter by author, title or topic" /></label>
+          </div>
+        </div>
+        <div class="wrap">
+          <nav id="rl-toc" class="rl-toc" aria-label="Sections"></nav>
+          <div id="rl-list"></div>
         </div>
       </section>
 

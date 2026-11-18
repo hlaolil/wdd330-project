@@ -80,7 +80,7 @@ export function toRis(items) {
       if (r.place) lines.push(`CY  - ${r.place}`);
       if (r.isbn) lines.push(`SN  - ${r.isbn}`);
       if (r.doi) lines.push(`DO  - ${r.doi}`);
-      if (r.link) lines.push(`UR  - ${r.link}`);
+      if (r.link && !/search\?|scholar\?/.test(r.link)) lines.push(`UR  - ${r.link}`);
       if (r.abstract) lines.push(`AB  - ${r.abstract}`);
       if (r.note) lines.push(`N1  - ${r.note}`);
       lines.push('ER  - ');

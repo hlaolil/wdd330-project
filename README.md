@@ -6,6 +6,8 @@ Search theology books, journal articles and dissertations in one place, keep a r
 
 ## What it does
 
+- **Reading List.** My PhD research reading list on bi-vocational ministry (call, ordination and pastoral support in the Assemblies of God Lesotho), grouped by area, with Turabian entries, links, Copy, and Save / Add all to My Library. The list lives in `src/data/bivocational.json`.
+
 - **One search, three kinds of source.** Books come from [Open Library](https://openlibrary.org/developers/api); journal articles and dissertations come from [OpenAlex](https://docs.openalex.org). Neither needs an API key.
 - **Filter and sort.** All / Books / Articles / Dissertations; best match, newest, oldest or title. "Theology only" adds *theology* to the search unless the words already point there.
 - **Abstracts and free full text.** Article and dissertation abstracts are shown, with a link to an open-access copy when one exists.

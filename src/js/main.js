@@ -1,6 +1,7 @@
 import { searchBooks, searchWorks, PAGE_SIZE } from './api.js';
 import { turabian, toRis, esc } from './cite.js';
 import * as lib from './library.js';
+import { readingList, renderReadingList, toResource } from './reading.js';
 
 const $ = sel => document.querySelector(sel);
 const TYPE_LABEL = { book: 'Book', article: 'Article', dissertation: 'Dissertation' };
@@ -12,11 +13,12 @@ const shown = new Map(); // id -> resource currently on screen (for Save / Cite 
 
 // ---------- views ----------
 function showView() {
-  const view = location.hash.startsWith('#library') ? 'library' : 'search';
-  $('#view-search').hidden = view !== 'search';
-  $('#view-library').hidden = view !== 'library';
+  const h = location.hash;
+  const view = h.startsWith('#library') ? 'library' : h.startsWith('#search') ? 'search' : 'reading';
+  for (const v of ['reading', 'search', 'library']) $(`#view-${v}`).hidden = v !== view;
   document.querySelectorAll('.tabs a').forEach(a => a.classList.toggle('active', a.dataset.view === view));
   if (view === 'library') renderLibrary();
+  if (view === 'reading') renderReadingList($('#rl-filter').value);
 }
 
 function updateCount() {
@@ -248,7 +250,7 @@ document.addEventListener('click', e => {
     updateCount();
     renderLibrary();
   } else if (b.dataset.act === 'cite' && r) {
-    const c = turabian(r);
+    const c = r.citeHtml ? { html: r.citeHtml, text: r.cite } : turabian(r);
     $('#cite-text').innerHTML = c.html;
     $('#cite-text').dataset.plain = c.text;
     $('#copy-cite').textContent = 'Copy';
@@ -309,6 +311,50 @@ document.addEventListener(
   },
   true,
 );
+
+// ---------- reading list ----------
+const rlById = new Map(readingList.items.map(it => [it.id, it]));
+$('#rl-title').textContent = readingList.title;
+$('#rl-intro').textContent = `${readingList.items.length} works in ${readingList.strands.length} areas. Save any of them to My Library to track your reading and export to Zotero.`;
+
+$('#view-reading').addEventListener('click', async e => {
+  const jump = e.target.closest('[data-jump]');
+  if (jump) {
+    e.preventDefault();
+    document.getElementById(jump.dataset.jump)?.scrollIntoView({ behavior: 'smooth' });
+    return;
+  }
+  const b = e.target.closest('[data-act]');
+  if (!b) return;
+  const it = rlById.get(b.dataset.id);
+  if (b.dataset.act === 'save-rl' && it) {
+    lib.save(toResource(it));
+    updateCount();
+    renderReadingList($('#rl-filter').value);
+  } else if (b.dataset.act === 'copy-rl' && it) {
+    try {
+      await navigator.clipboard.writeText(it.cite);
+      b.textContent = 'Copied ✓';
+    } catch {
+      b.textContent = 'Select and copy';
+    }
+  }
+});
+
+$('#rl-save-all').addEventListener('click', () => {
+  let added = 0;
+  for (const it of readingList.items) {
+    if (!lib.isSaved(it.id)) {
+      lib.save(toResource(it));
+      added++;
+    }
+  }
+  updateCount();
+  renderReadingList($('#rl-filter').value);
+  $('#rl-save-all').textContent = added ? `Added ${added} ✓` : 'All already saved ✓';
+});
+
+$('#rl-filter').addEventListener('input', e => renderReadingList(e.target.value));
 
 // ---------- start ----------
 readHash();
